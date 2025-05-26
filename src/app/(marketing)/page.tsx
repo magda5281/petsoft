@@ -17,7 +17,7 @@ export default function Home() {
       />
       <div>
         <Logo />
-        <h1 className='text-5xl font-semibold my-6 max-w-[35rem] '>
+        <h1 className='text-3xl sm:text-4xl md:text-5xl font-semibold my-6 max-w-[32rem] '>
           Manage your <span className='font-bold'>pet daycare </span> with ease
         </h1>
         <p className='text-2xl font-medium max-w-[37.5rem]'>
