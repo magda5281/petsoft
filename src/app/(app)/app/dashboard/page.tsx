@@ -12,16 +12,19 @@ export default function DashboardPage() {
         <Branding />
         <Stats />
       </div>
-      <div className='grid grid-cols-3 grid-rows-[3rem_1fr] gap-4 h-[38rem]'>
-        <div className='row-start-1 row-span-1 col-start-1 col-span-1'>
+      <div
+        className='grid grid-rows-[3rem_1fr_1fr]
+      md:grid-cols-3 md:grid-rows-[3rem_1fr] gap-4 h-screen md:h-[38rem]'
+      >
+        <div className='md:row-start-1 md:row-span-1 md:col-start-1 md:col-span-1'>
           <SearchForm />
         </div>
-        <div className='row-start-2 row-span-full col-start-1 col-span-1'>
+        <div className='row-start-2 md:row-span-full col-start-1 col-span-1'>
           <ContentBlock>
             <PetList />
           </ContentBlock>
         </div>
-        <div className='row-start-1 row-span-full col-start-2 col-span-full'>
+        <div className='md:row-start-1 md:row-span-full md:col-start-2 md:col-span-full'>
           <ContentBlock>
             <PetDetails />
           </ContentBlock>
