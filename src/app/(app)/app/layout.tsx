@@ -3,6 +3,7 @@ import AppHeader from '@/components/appHeader';
 import BackgroundPattern from '@/components/backgroundPattern';
 import Container from '@/components/container';
 import PetContextProvider from '@/contexts/pet-context-provider';
+import SearchContextProvider from '@/contexts/search-context-provider';
 import { Pet } from '@/lib/types';
 
 export default async function Layout({
@@ -23,7 +24,9 @@ export default async function Layout({
       <BackgroundPattern />
       <Container>
         <AppHeader />
-        <PetContextProvider data={petsData}>{children}</PetContextProvider>
+        <SearchContextProvider>
+          <PetContextProvider data={petsData}>{children}</PetContextProvider>
+        </SearchContextProvider>
         <AppFooter />
       </Container>
     </>

@@ -1,5 +1,9 @@
 'use client';
+
+import { useSearchContext } from '@/lib/hooks';
+
 export default function SearchForm() {
+  const { searchQuery, handleChangeSearchQuery } = useSearchContext();
   return (
     <form action='' className='w-full h-full'>
       <input
@@ -13,9 +17,9 @@ export default function SearchForm() {
         aria-label='Search pets'
         role='search'
         spellCheck='false'
+        value={searchQuery}
         onChange={(e) => {
-          // Handle search input change
-          console.log(e.target.value);
+          handleChangeSearchQuery(e.target.value);
         }}
       />
     </form>
