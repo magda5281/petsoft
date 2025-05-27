@@ -3,6 +3,7 @@ import AppHeader from '@/components/appHeader';
 import BackgroundPattern from '@/components/backgroundPattern';
 import Container from '@/components/container';
 import PetContextProvider from '@/contexts/pet-context-provider';
+import { Pet } from '@/lib/types';
 
 export default async function Layout({
   children,
@@ -15,10 +16,8 @@ export default async function Layout({
   if (!response.ok) {
     throw new Error('Failed to fetch pets data');
   }
-  const petsData = await response.json();
-  if (!petsData || !Array.isArray(petsData)) {
-    throw new Error('Invalid pets data format');
-  }
+  const petsData: Pet[] = await response.json();
+
   return (
     <>
       <BackgroundPattern />
