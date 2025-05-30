@@ -30,7 +30,7 @@ export default function PetButton({
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         {actionType === 'add' ? (
           <Button size='icon'>
             <PlusIcon className='h-6 w-6' />
