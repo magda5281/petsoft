@@ -20,7 +20,7 @@ export default async function DashboardPage() {
         <div className='md:row-start-1 md:row-span-1 md:col-start-1 md:col-span-1'>
           <SearchForm />
         </div>
-        <div className='relative row-start-2 md:row-span-full col-start-1 col-span-1'>
+        <div className='relative row-start-2 row-span-full md:col-start-1 md:col-span-1'>
           <ContentBlock>
             <PetList />
             <div className='absolute bottom-4 right-4'>
