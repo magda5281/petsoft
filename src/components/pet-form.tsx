@@ -1,9 +1,9 @@
 import { usePetContext } from '@/lib/hooks';
-import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { addPet } from '@/actions/actions';
+import PetFormBtn from './pet-form-btn';
 
 type PetFormProps = {
   actionType: 'add' | 'edit';
@@ -18,7 +18,10 @@ export default function PetForm({
   return (
     <form
       action={async (formData) => {
-        await addPet(formData);
+        const error = await addPet(formData);
+        if (error) {
+          alert(error.message);
+        }
         onFormSubmission();
       }}
     >
@@ -80,9 +83,7 @@ export default function PetForm({
             defaultValue={actionType === 'edit' ? selectedPet?.notes : ''}
           />
         </div>
-        <Button type='submit' className='self-end'>
-          {actionType === 'add' ? 'Add a new pet' : 'Update pet'}
-        </Button>
+        <PetFormBtn actionType={actionType} />
       </div>
     </form>
   );
