@@ -4,6 +4,7 @@ import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { addPet } from '@/actions/actions';
 import PetFormBtn from './pet-form-btn';
+import { toast } from 'sonner';
 
 type PetFormProps = {
   actionType: 'add' | 'edit';
@@ -20,7 +21,7 @@ export default function PetForm({
       action={async (formData) => {
         const error = await addPet(formData);
         if (error) {
-          alert(error.message);
+          toast.warning(error.message);
         }
         onFormSubmission();
       }}
