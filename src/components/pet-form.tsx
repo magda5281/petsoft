@@ -2,7 +2,7 @@ import { usePetContext } from '@/lib/hooks';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { addPet } from '@/actions/actions';
+import { addPet, editPet } from '@/actions/actions';
 import PetFormBtn from './pet-form-btn';
 import { toast } from 'sonner';
 
@@ -19,21 +19,21 @@ export default function PetForm({
   return (
     <form
       action={async (formData) => {
-        const error = await addPet(formData);
-        if (error) {
-          toast.warning(error.message);
+        if (actionType === 'add') {
+          const error = await addPet(formData);
+          if (error) {
+            toast.warning(error.message);
+          }
+        } else if (actionType === 'edit') {
+          const error = await editPet(selectedPet?.id, formData);
+          if (error) {
+            toast.warning(error.message);
+          }
         }
+
         onFormSubmission();
       }}
     >
-      <Input
-        id='id'
-        name='id'
-        type='hidden'
-        defaultValue={
-          actionType === 'edit' && selectedPet ? selectedPet.id : ''
-        }
-      />
       <div className='flex flex-col gap-3 '>
         <div className='space-y-1'>
           <Label htmlFor='name'>Name</Label>

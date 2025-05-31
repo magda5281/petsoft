@@ -34,15 +34,14 @@ export default function PetContextProvider({
   //actions/ event handlers
 
   const handleAddPet = async (newPet: Omit<Pet, 'id'>) => {
-    console.log(newPet);
     // setPets((prev) => [...prev, { ...newPet, id: Date.now().toString() }]);
     await addPet(newPet);
   };
 
   const handleEditPet = (petId: string, newPetData: Omit<Pet, 'id'>) => {
-    setPets((prev) =>
-      prev.map((pet) => (pet.id === petId ? { ...pet, ...newPetData } : pet))
-    );
+    // setPets((prev) =>
+    //   prev.map((pet) => (pet.id === petId ? { ...pet, ...newPetData } : pet))
+    // );
   };
 
   const handleChangeSelectedPetId = (id: string | null) => {
@@ -50,8 +49,8 @@ export default function PetContextProvider({
   };
 
   const handleCheckoutPet = (id: string | null) => {
-    setPets((prev) => prev.filter((pet) => pet.id !== id));
-    setSelectedPetId(null);
+    // setPets((prev) => prev.filter((pet) => pet.id !== id));
+    // setSelectedPetId(null);
   };
 
   return (
