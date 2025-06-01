@@ -4,7 +4,6 @@ import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import PetFormBtn from './pet-form-btn';
 import { useForm } from 'react-hook-form';
-import { PetEssentials } from '@/lib/types';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -30,7 +29,7 @@ const petFormSchema = z.object({
     z.string().trim().max(1000, { message: 'Enter maximum 1000 characters' }),
   ]),
 });
-
+type TPetForm = z.infer<typeof petFormSchema>;
 export default function PetForm({
   actionType,
   onFormSubmission,
@@ -41,7 +40,7 @@ export default function PetForm({
     register,
     trigger,
     formState: { errors },
-  } = useForm<PetEssentials>({
+  } = useForm<TPetForm>({
     resolver: zodResolver(petFormSchema),
   });
 
