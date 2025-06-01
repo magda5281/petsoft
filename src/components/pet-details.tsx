@@ -27,7 +27,7 @@ export default function PetDetails() {
 }
 type Props = { pet: Pet };
 function TopBar({ pet }: Props) {
-  // const { handleCheckoutPet } = usePetContext();
+  const { handleCheckoutPet } = usePetContext();
   const [isPending, startTransition] = useTransition();
   return (
     <div className='flex items-center gap-4 bg-white px-8 py-5  border-b border-light'>
@@ -45,12 +45,7 @@ function TopBar({ pet }: Props) {
           actionType='checkout'
           disabled={isPending}
           onClick={async () => {
-            startTransition(async () => {
-              const error = await deletePet(pet?.id);
-              if (error) {
-                toast.warning(error.message);
-              }
-            });
+            await handleCheckoutPet(pet.id);
           }}
         >
           Checkout
