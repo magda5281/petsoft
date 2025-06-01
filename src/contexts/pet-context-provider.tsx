@@ -1,6 +1,8 @@
 'use client';
 import { addPet, deletePet, editPet } from '@/actions/actions';
-import { Pet } from '@/lib/types';
+import { PetEssentials } from '@/lib/types';
+import { Pet } from '@prisma/client';
+
 import React, { createContext, useOptimistic, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -13,10 +15,10 @@ type TPetContext = {
   selectedPetId: string | null;
   selectedPet: Pet | undefined;
   numberOfPets: number;
-  handleChangeSelectedPetId: (id: string | null) => void;
-  handleCheckoutPet: (id: string | null) => Promise<void>;
-  handleAddPet: (newPet: Omit<Pet, 'id'>) => Promise<void>;
-  handleEditPet: (petId: string, newPetData: Omit<Pet, 'id'>) => Promise<void>;
+  handleChangeSelectedPetId: (id: Pet['id']) => void;
+  handleCheckoutPet: (id: Pet['id']) => Promise<void>;
+  handleAddPet: (newPet: PetEssentials) => Promise<void>;
+  handleEditPet: (petId: Pet['id'], newPetData: PetEssentials) => Promise<void>;
 };
 export const PetContext = createContext<TPetContext | null>(null);
 
@@ -27,8 +29,24 @@ export default function PetContextProvider({
   //state
   const [optimisticPets, setOptimisticPets] = useOptimistic(
     data,
-    (state, newPet) => {
-      return [...state, { ...newPet, id: Date.now() }];
+    (state, { action, payload }) => {
+      switch (action) {
+        case 'add':
+          return [...state, payload];
+        case 'edit':
+          return state.map((pet) => {
+            if (pet.id === payload.id) {
+              return { ...pet, ...payload.newPetData };
+            }
+            return pet;
+          });
+        case 'delete':
+          return state.filter((pet) => {
+            pet.id !== payload;
+          });
+        default:
+          return state;
+      }
     }
   );
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
@@ -39,16 +57,22 @@ export default function PetContextProvider({
 
   //actions/ event handlers
 
-  const handleAddPet = async (newPet: Omit<Pet, 'id'>) => {
-    setOptimisticPets(newPet);
+  const handleAddPet = async (newPet: PetEssentials) => {
+    setOptimisticPets({
+      action: 'add',
+      payload: { ...newPet, id: Date.now().toString() },
+    });
     const error = await addPet(newPet);
     if (error) {
       toast.warning(error.message);
     }
   };
 
-  const handleEditPet = async (petId: string, newPetData: Omit<Pet, 'id'>) => {
-    // setOptimisticPets({ ...newPetData, petId });
+  const handleEditPet = async (petId: Pet['id'], newPetData: PetEssentials) => {
+    setOptimisticPets({
+      action: 'edit',
+      payload: { newPetData, id: petId },
+    });
     const error = await editPet(petId, newPetData);
     if (error) {
       toast.warning(error.message);
@@ -56,11 +80,11 @@ export default function PetContextProvider({
     }
   };
 
-  const handleChangeSelectedPetId = (id: string | null) => {
-    setSelectedPetId(id);
-  };
-
-  const handleCheckoutPet = async (petId: string | null) => {
+  const handleCheckoutPet = async (petId: Pet['id']) => {
+    setOptimisticPets({
+      action: 'delete',
+      payload: { id: petId },
+    });
     const error = await deletePet(petId);
     if (error) {
       toast.warning(error.message);
@@ -69,6 +93,9 @@ export default function PetContextProvider({
     setSelectedPetId(null);
   };
 
+  const handleChangeSelectedPetId = (id: Pet['id']) => {
+    setSelectedPetId(id);
+  };
   return (
     <PetContext.Provider
       value={{
