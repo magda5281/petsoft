@@ -3,6 +3,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import PetFormBtn from './pet-form-btn';
+import { useForm } from 'react-hook-form';
+import { PetEssentials } from '@/lib/types';
 
 type PetFormProps = {
   actionType: 'add' | 'edit';
@@ -14,9 +16,17 @@ export default function PetForm({
 }: PetFormProps) {
   const { selectedPet, handleAddPet, handleEditPet } = usePetContext();
 
+  const {
+    register,
+    trigger,
+    formState: { errors },
+  } = useForm<PetEssentials>();
+
   return (
     <form
       action={async (formData) => {
+        const result = await trigger();
+        if (!result) return;
         onFormSubmission();
         const petData = {
           name: formData.get('name') as string,
@@ -39,51 +49,51 @@ export default function PetForm({
           <Label htmlFor='name'>Name</Label>
           <Input
             id='name'
-            name='name'
-            type='text'
-            defaultValue={actionType === 'edit' ? selectedPet?.name : ''}
-            required
+            {...register('name', {
+              required: 'Name is required',
+              minLength: {
+                value: 3,
+                message: 'Name must be at least 3 characters long',
+              },
+            })}
           />
         </div>
+        {errors.name && <p className='text-red-500'>{errors.name.message}</p>}
         <div className='space-y-1'>
           <Label htmlFor='ownerName'>Owner name</Label>
           <Input
             id='ownerName'
-            name='ownerName'
-            type='text'
-            defaultValue={actionType === 'edit' ? selectedPet?.ownerName : ''}
-            required
+            {...register('ownerName', {
+              required: 'Owner name is required',
+              maxLength: {
+                value: 20,
+                message: 'Owner name must be less than 20 characters long',
+              },
+            })}
           />
         </div>
+        {errors.ownerName && (
+          <p className='text-red-500'>{errors.ownerName.message}</p>
+        )}
         <div className='space-y-1'>
           <Label htmlFor='imageUrl'>Image Url</Label>
-          <Input
-            id='imageUrl'
-            name='imageUrl'
-            type='text'
-            defaultValue={actionType === 'edit' ? selectedPet?.imageUrl : ''}
-          />
+          <Input id='imageUrl' {...register('imageUrl')} />
         </div>
+        {errors.imageUrl && (
+          <p className='text-red-500'>{errors.imageUrl?.message}</p>
+        )}
         <div className='space-y-1'>
           <Label htmlFor='age'>Age</Label>
-          <Input
-            id='age'
-            name='age'
-            type='number'
-            required
-            defaultValue={actionType === 'edit' ? selectedPet?.age : ''}
-          />
-        </div>{' '}
+          <Input id='age' {...register('age')} />
+        </div>
+        {errors.age && <p className='text-red-500'>{errors.age?.message}</p>}
         <div className='space-y-1'>
           <Label htmlFor='notes'>Notes</Label>
-          <Textarea
-            id='notes'
-            name='notes'
-            rows={3}
-            required
-            defaultValue={actionType === 'edit' ? selectedPet?.notes : ''}
-          />
+          <Textarea id='notes' {...register('notes')} rows={3} />
         </div>
+        {errors.notes && (
+          <p className='text-red-500'>{errors.notes?.message}</p>
+        )}
         <PetFormBtn actionType={actionType} />
       </div>
     </form>
