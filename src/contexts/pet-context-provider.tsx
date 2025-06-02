@@ -63,6 +63,7 @@ export default function PetContextProvider({
       payload: { ...newPet, id: Date.now().toString() },
     });
     const error = await addPet(newPet);
+
     if (error) {
       toast.warning(error.message);
     }
