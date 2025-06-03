@@ -25,7 +25,7 @@ model Pet {
   ownerName String
   age       Int
   notes     String
-  User      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
   userId    String
   imageUrl  String
   updatedAt DateTime @updatedAt
