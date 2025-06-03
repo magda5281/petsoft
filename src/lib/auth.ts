@@ -49,6 +49,19 @@ const config = {
 
       return true;
     },
+    async jwt({ token, user }) {
+      // On first sign-in, `user.id` is already set as `token.sub` by NextAuth,
+      // so you don't have to do `token.sub = user.id` again.
+      // Just return the token as-is:
+      return token;
+    },
+    async session({ session, token }) {
+      // Copy `token.sub` into `session.user.id`
+      if (token.sub && session.user) {
+        session.user.id = token.sub as string;
+      }
+      return session;
+    },
   },
   secret: process.env.AUTH_SECRET,
   session: {

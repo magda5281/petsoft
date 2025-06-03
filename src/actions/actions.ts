@@ -28,9 +28,7 @@ export async function signUp(formData: FormData) {
   return await signIn('credentials', formData);
 }
 export async function logIn(formData: FormData) {
-  const authData = Object.fromEntries(formData.entries());
-
-  return await signIn('credentials', authData);
+  return await signIn('credentials', formData);
 }
 
 export async function logOut() {
