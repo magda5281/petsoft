@@ -1,14 +1,13 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import prisma from '@/lib/db';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 const config = {
   providers: [
     Credentials({
       async authorize(credentials) {
         // runs on login
-        // e.g. look up user in your DB using credentials.email / credentials.password
-        // If valid, return { id, name, email, ... }; otherwise return null or throw.
+
         const { email, password } = credentials || {};
         const user = await prisma.user.findUnique({
           where: { email },
@@ -25,7 +24,7 @@ const config = {
           throw new Error('Invalid credentials');
           return null;
         }
-
+        console.log('User authenticated successfully:', user);
         return user;
       },
     }),
@@ -35,16 +34,21 @@ const config = {
     signIn: '/login',
   },
   callbacks: {
-    authorized: async ({ request }) => {
+    authorized: async ({ auth, request }) => {
+      //runs on every request
+      const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessApp = request.nextUrl.pathname.includes('/app');
-      if (isTryingToAccessApp) {
-        return false;
-      } else {
-        return true;
+
+      if (!isLoggedIn && isTryingToAccessApp) {
+        return false; // user is not logged in and trying to access app
       }
+      if (isLoggedIn && !isTryingToAccessApp) {
+        return true; // user is logged in but not trying to access app
+      }
+      return true; // user is logged in or not trying to access app
     },
   },
-  // secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
