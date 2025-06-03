@@ -4,15 +4,33 @@ import { signIn, signOut } from '@/lib/auth';
 import prisma from '@/lib/db';
 import { sleep } from '@/lib/utils';
 import { petFormSchema, petIdSchema } from '@/lib/validations';
+import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 // ---user actions ---
+export async function signUp(formData: FormData) {
+  const hashedPassword = await bcrypt.hashSync(
+    formData.get('password') as string,
+    10
+  );
+  const email = formData
+    .get('email')
+    ?.toString()
+    .trim()
+    .toLowerCase() as string;
 
+  await prisma.user.create({
+    data: {
+      email,
+      hashedPassword,
+    },
+  });
+  return await signIn('credentials', formData);
+}
 export async function logIn(formData: FormData) {
   const authData = Object.fromEntries(formData.entries());
 
-  await signIn('credentials', authData);
+  return await signIn('credentials', authData);
 }
 
 export async function logOut() {

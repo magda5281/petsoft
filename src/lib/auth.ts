@@ -39,19 +39,15 @@ const config = {
       const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessApp = request.nextUrl.pathname.includes('/app');
 
-      if (!isLoggedIn && isTryingToAccessApp) {
-        return false;
+      if (isTryingToAccessApp) {
+        return isLoggedIn;
       }
-      if (isLoggedIn && isTryingToAccessApp) {
-        return true;
-      }
-      if (isLoggedIn && !isTryingToAccessApp) {
+
+      if (isLoggedIn) {
         return Response.redirect(new URL('/app/dashboard', request.nextUrl));
       }
-      if (!isLoggedIn && !isTryingToAccessApp) {
-        return true;
-      }
-      return false;
+
+      return true;
     },
   },
   secret: process.env.AUTH_SECRET,
