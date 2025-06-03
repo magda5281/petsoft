@@ -69,6 +69,12 @@ export async function addPet(pet: unknown) {
 }
 
 export async function editPet(petId: unknown, pet: unknown) {
+  //authentication check
+  const session = await auth(); // Get the current user session
+  if (!session?.user) {
+    redirect('/login');
+  }
+  //validation
   const validatedPetId = petIdSchema.safeParse(petId);
   const validatedPet = petFormSchema.safeParse(pet);
 
@@ -77,6 +83,25 @@ export async function editPet(petId: unknown, pet: unknown) {
       message: 'Invalid pet data',
     };
   }
+
+  //authorization
+
+  const existingPet = await prisma.pet.findUnique({
+    where: {
+      id: validatedPetId.data,
+    },
+  });
+  if (!existingPet) {
+    return {
+      message: 'Pet not found',
+    };
+  }
+  if (existingPet.userId !== session.user.id) {
+    return {
+      message: 'Not authorized to edit this pet',
+    };
+  }
+  //database mutation
   try {
     await prisma.pet.update({
       where: {
