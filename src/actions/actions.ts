@@ -1,19 +1,27 @@
 'use server';
 
-import { signIn } from '@/lib/auth';
+import { signIn, signOut } from '@/lib/auth';
 import prisma from '@/lib/db';
 import { sleep } from '@/lib/utils';
 import { petFormSchema, petIdSchema } from '@/lib/validations';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 // ---user actions ---
 
 export async function logIn(formData: FormData) {
   const authData = Object.fromEntries(formData.entries());
-  //retr
-  //return result of your signin function
-  return await signIn('credentials', authData);
+
+  return await signIn('credentials', {
+    ...authData,
+    redirectTo: '/app/dashboard', // This is the URL to redirect to after successful login
+  });
 }
+
+export async function logOut() {
+  return await signOut({ redirectTo: '/' });
+}
+
 //-----pet actions ----
 export async function addPet(pet: unknown) {
   await sleep(1000);
