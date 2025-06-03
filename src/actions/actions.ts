@@ -2,6 +2,7 @@
 
 import { auth, signIn, signOut } from '@/lib/auth';
 import prisma from '@/lib/db';
+import { checkAuth } from '@/lib/server-utils';
 import { petFormSchema, petIdSchema } from '@/lib/validations';
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
@@ -37,10 +38,10 @@ export async function logOut() {
 
 //-----pet actions ----
 export async function addPet(pet: unknown) {
-  const session = await auth(); // Get the current user session
-  if (!session?.user) {
-    redirect('/login');
-  }
+  //authentication check
+  const session = await checkAuth();
+
+  //validation
   const validatedPet = petFormSchema.safeParse(pet); // Validate the pet data against the schema
 
   if (!validatedPet.success) {
@@ -48,13 +49,15 @@ export async function addPet(pet: unknown) {
       message: 'Invalid pet data',
     };
   }
+
+  //database mutation
   try {
     await prisma.pet.create({
       data: {
         ...validatedPet.data,
         user: {
           connect: {
-            id: session.user?.id,
+            id: session.user.id,
           },
         },
       },
@@ -70,10 +73,7 @@ export async function addPet(pet: unknown) {
 
 export async function editPet(petId: unknown, pet: unknown) {
   //authentication check
-  const session = await auth(); // Get the current user session
-  if (!session?.user) {
-    redirect('/login');
-  }
+  const session = await checkAuth();
   //validation
   const validatedPetId = petIdSchema.safeParse(petId);
   const validatedPet = petFormSchema.safeParse(pet);
@@ -119,11 +119,7 @@ export async function editPet(petId: unknown, pet: unknown) {
 
 export async function deletePet(petId: unknown) {
   //authentication check
-  const session = await auth(); // Get the current user session
-  if (!session?.user) {
-    redirect('/login');
-  }
-
+  const session = await checkAuth();
   //validation
   const validatedPetId = petIdSchema.safeParse(petId);
   if (!validatedPetId.success) {
