@@ -24,7 +24,7 @@ const config = {
           throw new Error('Invalid credentials');
           return null;
         }
-        console.log('User authenticated successfully:', user);
+
         return user;
       },
     }),
