@@ -12,10 +12,7 @@ import { redirect } from 'next/navigation';
 export async function logIn(formData: FormData) {
   const authData = Object.fromEntries(formData.entries());
 
-  return await signIn('credentials', {
-    ...authData,
-    redirectTo: '/app/dashboard', // This is the URL to redirect to after successful login
-  });
+  await signIn('credentials', authData);
 }
 
 export async function logOut() {

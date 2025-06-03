@@ -40,12 +40,18 @@ const config = {
       const isTryingToAccessApp = request.nextUrl.pathname.includes('/app');
 
       if (!isLoggedIn && isTryingToAccessApp) {
-        return false; // user is not logged in and trying to access app
+        return false;
+      }
+      if (isLoggedIn && isTryingToAccessApp) {
+        return true;
       }
       if (isLoggedIn && !isTryingToAccessApp) {
-        return true; // user is logged in but not trying to access app
+        return Response.redirect(new URL('/app/dashboard', request.nextUrl));
       }
-      return true; // user is logged in or not trying to access app
+      if (!isLoggedIn && !isTryingToAccessApp) {
+        return true;
+      }
+      return false;
     },
   },
   secret: process.env.AUTH_SECRET,
