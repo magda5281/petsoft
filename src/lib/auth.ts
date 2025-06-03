@@ -1,7 +1,36 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
-
+import Credentials from 'next-auth/providers/credentials';
+import prisma from '@/lib/db';
+import bcrypt from 'bcrypt';
 const config = {
-  providers: [],
+  providers: [
+    Credentials({
+      async authorize(credentials) {
+        // runs on login
+        // e.g. look up user in your DB using credentials.email / credentials.password
+        // If valid, return { id, name, email, ... }; otherwise return null or throw.
+        const { email, password } = credentials || {};
+        const user = await prisma.user.findUnique({
+          where: { email },
+        });
+        if (!user) {
+          throw new Error('No user found with the given email');
+          return null;
+        }
+        const passwordMatch = await bcrypt.compare(
+          password,
+          user.hashedPassword
+        );
+        if (!passwordMatch) {
+          throw new Error('Invalid credentials');
+          return null;
+        }
+
+        return user;
+      },
+    }),
+  ],
+
   pages: {
     signIn: '/login',
   },
@@ -15,7 +44,7 @@ const config = {
       }
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  // secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -23,4 +52,4 @@ const config = {
   },
 } satisfies NextAuthConfig;
 
-export const { auth } = NextAuth(config);
+export const { auth, signIn, signOut } = NextAuth(config);
