@@ -2,7 +2,10 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 
-export default function AuthForm() {
+type AuthFormProps = {
+  type: 'login' | 'signup';
+};
+export default function AuthForm({ type }: AuthFormProps) {
   return (
     <form>
       <div className='flex flex-col gap-3 '>

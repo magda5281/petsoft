@@ -6,7 +6,7 @@ export default function Signup() {
   return (
     <main className='space-y-4'>
       <H1 className='text-center mt-4'>Sign up</H1>
-      <AuthForm />
+      <AuthForm type='signup' />
       <p className='text-sm text-muted-foreground'>
         Already have an account?
         <Link

@@ -6,7 +6,7 @@ export default function Login() {
   return (
     <main className='space-y-4'>
       <H1 className='text-center mt-4'>Log In</H1>
-      <AuthForm />
+      <AuthForm type='login' />
       <p className='text-sm text-muted-foreground'>
         Don't have an account?
         <Link
