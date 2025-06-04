@@ -13,7 +13,6 @@ import { revalidatePath } from 'next/cache';
 
 // ---user actions ---
 export async function signUp(prevState: unknown, formData: FormData) {
-  sleep(2000);
   const data = Object.fromEntries(formData.entries());
   const validatedFormData = authSchema.safeParse(data);
 
