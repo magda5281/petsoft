@@ -57,7 +57,7 @@ export async function logIn(prevState: unknown, formData: FormData) {
     return { message: 'Could not login' };
   }
   try {
-    return await signIn('credentials', formData);
+    await signIn('credentials', formData);
   } catch (error) {
     // Handle error, e.g., invalid credentials
     if (error instanceof AuthError) {
@@ -81,7 +81,7 @@ export async function logIn(prevState: unknown, formData: FormData) {
 }
 
 export async function logOut() {
-  return await signOut({ redirectTo: '/' });
+  await signOut({ redirectTo: '/' });
 }
 
 //-----pet actions ----
