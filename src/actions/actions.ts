@@ -3,34 +3,48 @@
 import { signIn, signOut } from '@/lib/auth';
 import prisma from '@/lib/db';
 import { checkAuth, getPetByPetId } from '@/lib/server-utils';
+import { sleep } from '@/lib/utils';
 import { authSchema, petFormSchema, petIdSchema } from '@/lib/validations';
+import { Prisma } from '@prisma/client';
+
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 
 // ---user actions ---
 export async function signUp(formData: FormData) {
-  const data = Object.fromEntries(formData.entries()) as Record<
-    string,
-    unknown
-  >;
+  sleep(2000);
+  const data = Object.fromEntries(formData.entries());
   const validatedFormData = authSchema.safeParse(data);
 
   if (!validatedFormData.success) {
-    return { message: 'Invalid credentials' };
+    throw new Error('Invalid sign-up data');
   }
 
-  const hashedPassword = bcrypt.hashSync(validatedFormData.data.password, 10);
-  const email = validatedFormData.data.email;
+  const { email, password } = validatedFormData.data;
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
-  await prisma.user.create({
-    data: {
-      email,
-      hashedPassword,
-    },
-  });
+  try {
+    await prisma.user.create({
+      data: {
+        email,
+        hashedPassword,
+      },
+    });
+  } catch (error) {
+    // Handle error, e.g., user already exists
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        // Unique constraint failed on the email field
+        throw new Error('User already exists');
+      }
+      throw new Error('Could not add user');
+    }
+  }
+
   return await signIn('credentials', formData);
 }
 export async function logIn(formData: FormData) {
+  sleep(2000); //simulate delay for security
   //validation on server
   const data = Object.fromEntries(formData.entries()) as Record<
     string,
@@ -40,7 +54,7 @@ export async function logIn(formData: FormData) {
 
   //authentication check
   if (!validatedFormData.success) {
-    return { message: 'Invalid login' };
+    throw new Error('Could not login');
   }
 
   return await signIn('credentials', formData);
