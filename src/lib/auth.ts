@@ -42,15 +42,27 @@ const config = {
       const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessApp = request.nextUrl.pathname.includes('/app');
 
-      if (isTryingToAccessApp) {
-        return isLoggedIn;
+      if (!isLoggedIn && isTryingToAccessApp) {
+        return false;
+      }
+      if (isLoggedIn && isTryingToAccessApp) {
+        return true;
       }
 
-      if (isLoggedIn) {
-        return Response.redirect(new URL('/app/dashboard', request.nextUrl));
+      if (isLoggedIn && !isTryingToAccessApp) {
+        if (
+          request.nextUrl.pathname.includes('/login') ||
+          request.nextUrl.pathname.includes('/signup')
+        ) {
+          return Response.redirect(new URL('/payment', request.nextUrl));
+        }
+
+        return true;
       }
 
-      return true;
+      if (!isLoggedIn && !isTryingToAccessApp) {
+        return true;
+      }
     },
     async jwt({ token, user }) {
       // On first sign-in, `user.id` is already set as `token.sub` by NextAuth,

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '../styles/globals.css';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
         className={`${inter.className} text-sm text-zinc-900 bg-[#e5e8ec] min-h-screen `}
       >
         {children}
+        <Toaster position='top-right' richColors />
       </body>
     </html>
   );

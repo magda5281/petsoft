@@ -3,14 +3,14 @@
 import { signIn, signOut } from '@/lib/auth';
 import prisma from '@/lib/db';
 import { checkAuth, getPetByPetId } from '@/lib/server-utils';
-import { sleep } from '@/lib/utils';
 import { authSchema, petFormSchema, petIdSchema } from '@/lib/validations';
 import { Prisma } from '@prisma/client';
 
 import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
 import { revalidatePath } from 'next/cache';
-
+import { redirect } from 'next/navigation';
+import stripe from '@/lib/stripe';
 // ---user actions ---
 export async function signUp(prevState: unknown, formData: FormData) {
   const data = Object.fromEntries(formData.entries());
@@ -198,4 +198,36 @@ export async function deletePet(petId: unknown) {
     };
   }
   revalidatePath('/app', 'layout');
+}
+
+//---paymnet actions ---
+export async function createCheckoutSession() {
+  const session = await checkAuth();
+  const customerEmail = session.user.email;
+
+  if (!customerEmail) {
+    // You can handle this however makes sense for your app:
+    // • Throw an error
+    // • Redirect to a “complete your profile” page
+    // • Use a fallback email
+    throw new Error('Cannot create Stripe session: user has no email on file');
+  }
+  //redirect to stripe checkout
+  const checkoutSession = await stripe.checkout.sessions.create({
+    customer_email: customerEmail, // Set the customer's email for the session
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: [
+      {
+        price: 'price_1RWGPxRmyi6qJPWoMxxnYENY',
+        quantity: 1, // Adjust the quantity as needed
+      },
+    ],
+    success_url: `${process.env.CANONICAL_URL}/payment?success=true`,
+    cancel_url: `${process.env.CANONICAL_URL}/payment?cancelled=true`,
+    metadata: {
+      userId: session.user.id, // Store the user ID in metadata for later reference
+    },
+  });
+  redirect(checkoutSession.url!);
 }
