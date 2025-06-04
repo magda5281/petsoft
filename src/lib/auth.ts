@@ -39,20 +39,27 @@ const config = {
   callbacks: {
     authorized: async ({ auth, request }) => {
       //runs on every request
+
       const isLoggedIn = Boolean(auth?.user);
+
       const isTryingToAccessApp = request.nextUrl.pathname.includes('/app');
 
       if (!isLoggedIn && isTryingToAccessApp) {
         return false;
       }
-      if (isLoggedIn && isTryingToAccessApp) {
+
+      if (isLoggedIn && isTryingToAccessApp && !auth?.user.hasAccess) {
+        return Response.redirect(new URL('/payment', request.nextUrl));
+      }
+      if (isLoggedIn && isTryingToAccessApp && auth?.user.hasAccess) {
         return true;
       }
 
       if (isLoggedIn && !isTryingToAccessApp) {
         if (
-          request.nextUrl.pathname.includes('/login') ||
-          request.nextUrl.pathname.includes('/signup')
+          (request.nextUrl.pathname.includes('/login') ||
+            request.nextUrl.pathname.includes('/signup')) &&
+          !auth?.user.hasAccess
         ) {
           return Response.redirect(new URL('/payment', request.nextUrl));
         }
@@ -68,12 +75,17 @@ const config = {
       // On first sign-in, `user.id` is already set as `token.sub` by NextAuth,
       // so you don't have to do `token.sub = user.id` again.
       // Just return the token as-is:
+      if (user) {
+        token.hasAccess = user.hasAccess || false;
+      }
+
       return token;
     },
     async session({ session, token }) {
       // Copy `token.sub` into `session.user.id`
       if (token.sub && session.user) {
         session.user.id = token.sub as string;
+        session.user.hasAccess = token.hasAccess || false;
       }
       return session;
     },

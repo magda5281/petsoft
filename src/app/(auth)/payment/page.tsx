@@ -6,21 +6,27 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 
-export default function PaymentPage({ searchParams }) {
+export default function PaymentPage({
+  searchParams,
+}: {
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
+}) {
   const [isPending, startTransition] = useTransition();
   //TODO: improve toast implementation
   const [status, setStatus] = useState(false);
   useEffect(() => {
-    if (searchParams.success || searchParams.cancelled) {
+    if (searchParams?.success || searchParams?.cancelled) {
       setStatus(true);
     }
   }, [searchParams]);
 
-  if (searchParams.success) {
+  if (searchParams?.success) {
     toast.success(
       'Payment successful! You now have lifetime access to PetSoft.'
     );
-  } else if (searchParams.cancelled) {
+  } else if (searchParams?.cancelled) {
     toast.error('Payment cancelled! You can try again.');
   }
 
