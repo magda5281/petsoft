@@ -18,7 +18,6 @@ const config = {
         const user = await getUserByEmail(email);
 
         if (!user) {
-          throw new Error('No user found with the given email');
           return null;
         }
         const passwordMatch = await bcrypt.compare(
@@ -26,7 +25,6 @@ const config = {
           user.hashedPassword
         );
         if (!passwordMatch) {
-          throw new Error('Invalid credentials');
           return null;
         }
 

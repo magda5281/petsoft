@@ -8,16 +8,17 @@ import { authSchema, petFormSchema, petIdSchema } from '@/lib/validations';
 import { Prisma } from '@prisma/client';
 
 import bcrypt from 'bcryptjs';
+import { AuthError } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 
 // ---user actions ---
-export async function signUp(formData: FormData) {
+export async function signUp(prevState: unknown, formData: FormData) {
   sleep(2000);
   const data = Object.fromEntries(formData.entries());
   const validatedFormData = authSchema.safeParse(data);
 
   if (!validatedFormData.success) {
-    throw new Error('Invalid sign-up data');
+    return { message: 'Invalid sign up credentials' };
   }
 
   const { email, password } = validatedFormData.data;
@@ -35,16 +36,15 @@ export async function signUp(formData: FormData) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         // Unique constraint failed on the email field
-        throw new Error('User already exists');
+        return { message: 'User already exists' };
       }
-      throw new Error('Could not add user');
     }
+    return { message: 'Could not add user' };
   }
 
   return await signIn('credentials', formData);
 }
-export async function logIn(formData: FormData) {
-  sleep(2000); //simulate delay for security
+export async function logIn(prevState: unknown, formData: FormData) {
   //validation on server
   const data = Object.fromEntries(formData.entries()) as Record<
     string,
@@ -54,10 +54,30 @@ export async function logIn(formData: FormData) {
 
   //authentication check
   if (!validatedFormData.success) {
-    throw new Error('Could not login');
+    return { message: 'Could not login' };
   }
+  try {
+    return await signIn('credentials', formData);
+  } catch (error) {
+    // Handle error, e.g., invalid credentials
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin': {
+          // Invalid credentials
+          return { message: 'Invalid credentials' };
+        }
+        case 'OAuthSignInError': {
+          // Invalid credentials
+          return { message: 'Could not sign in with social media account' };
+        }
 
-  return await signIn('credentials', formData);
+        default: {
+          return { message: 'Error. Invalid credentials' };
+        }
+      }
+    }
+    throw error; // Re-throw if it's not an AuthError, nextjs redirect throws error so we need to rethrow it
+  }
 }
 
 export async function logOut() {
