@@ -3,21 +3,24 @@
 import { signIn, signOut } from '@/lib/auth';
 import prisma from '@/lib/db';
 import { checkAuth, getPetByPetId } from '@/lib/server-utils';
-import { petFormSchema, petIdSchema } from '@/lib/validations';
+import { authSchema, petFormSchema, petIdSchema } from '@/lib/validations';
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 
 // ---user actions ---
 export async function signUp(formData: FormData) {
-  const hashedPassword = await bcrypt.hashSync(
-    formData.get('password') as string,
-    10
-  );
-  const email = formData
-    .get('email')
-    ?.toString()
-    .trim()
-    .toLowerCase() as string;
+  const data = Object.fromEntries(formData.entries()) as Record<
+    string,
+    unknown
+  >;
+  const validatedFormData = authSchema.safeParse(data);
+
+  if (!validatedFormData.success) {
+    return { message: 'Invalid credentials' };
+  }
+
+  const hashedPassword = bcrypt.hashSync(validatedFormData.data.password, 10);
+  const email = validatedFormData.data.email;
 
   await prisma.user.create({
     data: {
@@ -28,6 +31,18 @@ export async function signUp(formData: FormData) {
   return await signIn('credentials', formData);
 }
 export async function logIn(formData: FormData) {
+  //validation on server
+  const data = Object.fromEntries(formData.entries()) as Record<
+    string,
+    unknown
+  >;
+  const validatedFormData = authSchema.safeParse(data);
+
+  //authentication check
+  if (!validatedFormData.success) {
+    return { message: 'Invalid login' };
+  }
+
   return await signIn('credentials', formData);
 }
 

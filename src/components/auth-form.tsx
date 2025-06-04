@@ -12,12 +12,24 @@ export default function AuthForm({ type }: AuthFormProps) {
       <div className='flex flex-col gap-3 '>
         <div className='space-y-1'>
           <Label htmlFor='email'>Email</Label>
-          <Input id='email' type='email' name='email' />
+          <Input
+            id='email'
+            type='email'
+            name='email'
+            required
+            maxLength={100}
+          />
         </div>
 
         <div className='space-y-1'>
           <Label htmlFor='password'>Password</Label>
-          <Input id='password' type='password' name='password' />
+          <Input
+            id='password'
+            type='password'
+            name='password'
+            required
+            maxLength={100}
+          />
         </div>
 
         <Button className='self-start'>Log in</Button>
