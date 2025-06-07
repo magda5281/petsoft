@@ -44,23 +44,28 @@ const config = {
 
       const isTryingToAccessApp = request.nextUrl.pathname.includes('/app');
 
+      const hasAccess = auth?.user?.hasAccess;
+
+      const isLoginRoutes =
+        request.nextUrl.pathname.includes('/login') ||
+        request.nextUrl.pathname.includes('/signup');
+
       if (!isLoggedIn && isTryingToAccessApp) {
         return false;
       }
 
-      if (isLoggedIn && isTryingToAccessApp && !auth?.user.hasAccess) {
+      if (isLoggedIn && isTryingToAccessApp && !hasAccess) {
         return Response.redirect(new URL('/payment', request.nextUrl));
       }
-      if (isLoggedIn && isTryingToAccessApp && auth?.user.hasAccess) {
+      if (isLoggedIn && isTryingToAccessApp && hasAccess) {
         return true;
+      }
+      if (isLoggedIn && isLoginRoutes && hasAccess) {
+        return Response.redirect(new URL('/app/dashboard', request.nextUrl));
       }
 
       if (isLoggedIn && !isTryingToAccessApp) {
-        if (
-          (request.nextUrl.pathname.includes('/login') ||
-            request.nextUrl.pathname.includes('/signup')) &&
-          !auth?.user.hasAccess
-        ) {
+        if (isLoginRoutes && !hasAccess) {
           return Response.redirect(new URL('/payment', request.nextUrl));
         }
 
@@ -71,22 +76,31 @@ const config = {
         return true;
       }
     },
-    async jwt({ token, user }) {
+    async jwt({ token, trigger, user }) {
       // On first sign-in, `user.id` is already set as `token.sub` by NextAuth,
-      // so you don't have to do `token.sub = user.id` again.
-      // Just return the token as-is:
+
       if (user) {
         token.hasAccess = user.hasAccess || false;
+      }
+
+      if (trigger === 'update') {
+        if (typeof token.email === 'string') {
+          const userFromDb = await getUserByEmail(token.email);
+
+          if (userFromDb) {
+            token.hasAccess = userFromDb.hasAccess || false;
+          }
+        }
       }
 
       return token;
     },
     async session({ session, token }) {
       // Copy `token.sub` into `session.user.id`
-      if (token.sub && session.user) {
-        session.user.id = token.sub as string;
-        session.user.hasAccess = token.hasAccess || false;
-      }
+      // if (token.sub && session.user) {
+      session.user.id = token.sub as string;
+      session.user.hasAccess = token.hasAccess || false;
+      // }
       return session;
     },
   },
