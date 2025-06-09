@@ -22,10 +22,13 @@ export default function PaymentPage({
   useEffect(() => {
     if (searchParams.success === 'true') {
       toast.success(
-        'Payment successful! You now have lifetime access to PetSoft.'
+        'Payment successful! You now have lifetime access to PetSoft.',
+        { id: 'payment-success' }
       );
     } else if (searchParams.cancelled === 'true') {
-      toast.error('Payment cancelled! You can try again.');
+      toast.error('Payment cancelled! You can try again.', {
+        id: 'payment-error',
+      });
     }
   }, [searchParams.success, searchParams.cancelled]);
 
