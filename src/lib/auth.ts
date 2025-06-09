@@ -83,7 +83,7 @@ const config = {
         token.hasAccess = user.hasAccess || false;
       }
 
-      if (trigger === 'update') {
+      if (trigger === 'update' && user) {
         if (typeof token.email === 'string') {
           const userFromDb = await getUserByEmail(token.email);
 
@@ -97,10 +97,10 @@ const config = {
     },
     async session({ session, token }) {
       // Copy `token.sub` into `session.user.id`
-      // if (token.sub && session.user) {
+
       session.user.id = token.sub as string;
       session.user.hasAccess = token.hasAccess || false;
-      // }
+
       return session;
     },
   },

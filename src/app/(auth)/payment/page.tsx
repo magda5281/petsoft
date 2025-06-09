@@ -15,7 +15,7 @@ export default function PaymentPage({
   };
 }) {
   const [isPending, startTransition] = useTransition();
-  const { update } = useSession();
+  const { data, update } = useSession();
 
   const router = useRouter();
 
@@ -38,7 +38,7 @@ export default function PaymentPage({
       {searchParams && searchParams.success && (
         <Button
           onClick={async () => {
-            await update(true);
+            await update(data?.user.email);
             router.push('/app/dashboard');
           }}
         >
