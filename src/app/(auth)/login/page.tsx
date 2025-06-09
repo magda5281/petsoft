@@ -8,7 +8,7 @@ export default function Login() {
       <H1 className='text-center mt-4'>Log In</H1>
       <AuthForm type='login' />
       <p className='text-sm text-muted-foreground'>
-        Don't have an account?
+        Don&apos;t have an account?
         <Link
           href='/signup'
           className='text-zinc-500 font-medium text-sm hover:underline ml-1'
