@@ -48,7 +48,7 @@ PetSoft empowers pet daycare owners to:
 
 - NextAuth: JWT‐based credentials provider, custom callbacks, and session token updates
 
-- Stripe Checkout: payment flow with success/cancel URLs, webhook verification, Sonner notifications
+- Stripe Checkout: payment flow with success/cancel URLs, webhook verification, add webhook endpoint for production, Sonner notifications
 
 ### Dev Tools & Patterns
 
