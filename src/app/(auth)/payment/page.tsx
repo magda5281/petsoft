@@ -15,7 +15,7 @@ export default function PaymentPage({
   };
 }) {
   const [isPending, startTransition] = useTransition();
-  const { data, update } = useSession();
+  const { status, update } = useSession();
 
   const router = useRouter();
 
@@ -38,9 +38,11 @@ export default function PaymentPage({
       {searchParams && searchParams.success && (
         <Button
           onClick={async () => {
-            await update(data?.user.email);
+            await update(true);
             router.push('/app/dashboard');
           }}
+          disabled={status === 'loading'}
+          className='w-full max-w-xs'
         >
           Access PetSoft
         </Button>

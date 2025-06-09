@@ -3,6 +3,7 @@ import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { getUserByEmail } from './server-utils';
 import { authSchema } from './validations';
+
 const config = {
   providers: [
     Credentials({
@@ -83,7 +84,7 @@ const config = {
         token.hasAccess = user.hasAccess || false;
       }
 
-      if (trigger === 'update' && user) {
+      if (trigger === 'update') {
         if (typeof token.email === 'string') {
           const userFromDb = await getUserByEmail(token.email);
 
