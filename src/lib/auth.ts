@@ -76,6 +76,7 @@ const config = {
       if (!isLoggedIn && !isTryingToAccessApp) {
         return true;
       }
+      return false;
     },
     async jwt({ token, trigger, user }) {
       // On first sign-in, `user.id` is already set as `token.sub` by NextAuth,

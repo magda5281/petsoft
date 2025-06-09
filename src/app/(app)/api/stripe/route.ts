@@ -1,4 +1,5 @@
 import prisma from '@/lib/db';
+import { updateUserAccess } from '@/lib/server-utils';
 import stripe from '@/lib/stripe';
 
 export async function POST(request: Request) {
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
   if (!process.env.STRIPE_WEBHOOK_SECRET) {
     throw new Error('Missing env var STRIPE_WEBHOOK_SECRET');
   }
-  //TODO: verify the webhook came from stripe
+  //verify the webhook came from stripe
   let event;
   try {
     event = stripe.webhooks.constructEvent(
@@ -29,20 +30,16 @@ export async function POST(request: Request) {
     return Response.json(null, { status: 400 });
   }
 
-  //you can use stripe's library to verify the signature
-  // const signature = request.headers.get('stripe-signature');
-  // const event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET);
+  //fulfill the order - stripe sends the event with the type 'checkout.session.completed'
 
-  //fulfill the order
+  switch (event.type) {
+    case 'checkout.session.completed':
+      await updateUserAccess(event.data.object.customer_email as string, true);
 
-  await prisma.user.update({
-    where: {
-      email: data.data.object.customer_email,
-    },
-    data: {
-      hasAccess: true, // Update the user to have access
-    },
-  });
+      break;
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
 
   //return response so stripe knows it was received
   return Response.json(null, { status: 200 });

@@ -38,3 +38,14 @@ export async function getUserByEmail(email: User['email']) {
   });
   return user;
 }
+
+export async function updateUserAccess(
+  email: User['email'],
+  hasAccess: boolean
+) {
+  const user = await prisma.user.update({
+    where: { email },
+    data: { hasAccess },
+  });
+  return user;
+}
