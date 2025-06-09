@@ -23,6 +23,7 @@ export default function AuthForm({ type }: AuthFormProps) {
             name='email'
             required
             maxLength={100}
+            autoComplete='email'
           />
         </div>
 
@@ -34,6 +35,7 @@ export default function AuthForm({ type }: AuthFormProps) {
             name='password'
             required
             maxLength={100}
+            autoComplete='current-password'
           />
         </div>
         <AuthFormBtn type={type} />

@@ -19,6 +19,7 @@ export default function Login() {
       <p className='text-sm text-muted-foreground'>
         <Link
           href='/forgot-password'
+          prefetch={false}
           className='text-zinc-500 font-medium hover:underline'
         >
           Forgot your password?
