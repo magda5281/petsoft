@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PetSoft
 
-## Getting Started
+Cutting‐edge Next.js application for pet daycare management, featuring full CRUD, optimistic UI, server actions, authentication, payments, and seamless database integration (SQLite for local development, PostgreSQL in production via Prisma Data Proxy). Deployed on Vercel.
 
-First, run the development server:
+## 📖 Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+PetSoft empowers pet daycare owners to:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Keep track of pets under care (CRUD operations)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- View real‐time data with optimistic UI updates
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Securely authenticate users and manage sessions
 
-## Learn More
+- Process payments via Stripe Checkout
 
-To learn more about Next.js, take a look at the following resources:
+- Deploy globally with Vercel and Prisma Accelerate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Routing & UI
 
-## Deploy on Vercel
+- Private, public, and auth routes: fine‐grained access control using NextAuth callbacks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Shadcn/ui: accessible, consistent component library for building UI
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Data Management
+
+- Server Components & Actions: fetch data in server layouts, mutate via server actions with revalidatePath for fresh data
+
+- Prisma ORM: SQLite in dev, PostgreSQL in production (Prisma Accelerate/Data Proxy)
+
+- CRUD logic: create, read, update, delete pets in dashboard forms
+
+- Optimistic UI: immediate feedback while server operations complete
+
+- Context API: global search and pets context for state management
+
+### Validation & Types
+
+- Zod schemas: form validation client‐side and server‐side in actions
+
+- TypeScript safety: full typing with Prisma model types
+
+- React Hook Form: unified error handling via useFormState, useFormStatus, and useTransition
+
+### Authentication & Payments
+
+- NextAuth: JWT‐based credentials provider, custom callbacks, and session token updates
+
+- Stripe Checkout: payment flow with success/cancel URLs, webhook verification, Sonner notifications
+
+### Dev Tools & Patterns
+
+- Env management: .env.local for dev, Vercel env for production
+
+- Prisma Migrate & Seed: database migrations, seed scripts for initial data
+
+- NGROK: expose local webhooks to Stripe CLI for testing
+
+- Error Boundaries & 404: planned enhancements
+
+## 🛠️ Tech Stack
+
+- Next.js 14 (App Router, React 18+)
+
+- TypeScript
+
+- Prisma ORM + Prisma Accelerate/Data Proxy
+
+- Shadcn/ui, Lucide icons, Tailwind
+
+- React Hook Form, Zod
+
+- NextAuth.js
+
+- Stripe Node.js SDK, Sonner for toast notifications
+
+- Vercel for hosting & CI
