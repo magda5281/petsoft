@@ -98,8 +98,6 @@ const config = {
       return token;
     },
     async session({ session, token }) {
-      // Copy `token.sub` into `session.user.id`
-
       session.user.id = token.sub as string;
       session.user.hasAccess = token.hasAccess || false;
 

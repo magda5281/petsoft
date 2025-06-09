@@ -50,9 +50,12 @@ PetSoft empowers pet daycare owners to:
 
 - Stripe Checkout: payment flow with success/cancel URLs, webhook verification, add webhook endpoint for production, Sonner notifications
 
+**NOTE**
+Use Strapi test card number: 4242 4242 4242 4242
+
 ### Dev Tools & Patterns
 
-- Env management: .env.local for dev, Vercel env for production
+- Env management: .env
 
 - Prisma Migrate & Seed: database migrations, seed scripts for initial data
 
