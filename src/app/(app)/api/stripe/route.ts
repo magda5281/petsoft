@@ -1,4 +1,3 @@
-import prisma from '@/lib/db';
 import { updateUserAccess } from '@/lib/server-utils';
 import stripe from '@/lib/stripe';
 
