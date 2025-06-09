@@ -8,7 +8,7 @@ export default function SearchForm() {
     <form className='w-full h-full'>
       <input
         type='search'
-        className='w-full h-full bg-white/20 rounded -md px-5 outline-none focus:bg-white/50 hover:bg-white/30 transition placeholder:text-white/50'
+        className='w-full h-full bg-white/20 rounded -md px-5 outline-none focus:bg-white/30 focus:text-zinc-200 hover:bg-white/30 transition placeholder:text-zinc-200'
         placeholder='Search pets...'
         autoComplete='off'
         autoFocus

@@ -39,7 +39,7 @@ export default function PetButton({
     <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
       <DialogTrigger asChild>
         {actionType === 'add' ? (
-          <Button size='icon'>
+          <Button size='icon' aria-label='Add new pet'>
             <PlusIcon className='h-6 w-6' />
           </Button>
         ) : (
