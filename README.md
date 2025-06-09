@@ -2,6 +2,9 @@
 
 Cutting‐edge Next.js application for pet daycare management, featuring full CRUD, optimistic UI, server actions, authentication, payments, and seamless database integration (SQLite for local development, PostgreSQL in production via Prisma Data Proxy). Deployed on Vercel.
 
+🔗 **<a href="https://petsoft-wine.vercel.app" target="_blank">Live
+Demo</a>**
+
 ## 📖 Overview
 
 PetSoft empowers pet daycare owners to:
