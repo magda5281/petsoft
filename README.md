@@ -51,10 +51,15 @@ PetSoft empowers pet daycare owners to:
 
 - NextAuth: JWT‐based credentials provider, custom callbacks, and session token updates
 
+**NOTE**
+Use any fake test email and password to sign up
+
 - Stripe Checkout: payment flow with success/cancel URLs, webhook verification, add webhook endpoint for production, Sonner notifications
 
 **NOTE**
 Use Strapi test card number: 4242 4242 4242 4242
+MM/YY any future date
+CVC any 3 digit number
 
 ### Dev Tools & Patterns
 
