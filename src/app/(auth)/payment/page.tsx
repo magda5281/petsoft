@@ -50,9 +50,9 @@ export default function PaymentPage({
       )}
       {!(searchParams && searchParams.success) && (
         <DemoHint
+          title='Demo – no real payment is taken'
           hint={
             <>
-              <p className='font-semibold'>Demo – no real payment is taken</p>
               <p>Card number: 4242 4242 4242 4242</p>
               <p>Expiry (MM/YY): any future date</p>
               <p>CVC: any 3 digits</p>

@@ -8,13 +8,14 @@ export default function AuthFormBtn({ type }: { type: 'login' | 'signup' }) {
   return (
     <DemoHint
       className='self-start'
+      title="Demo app – please don't use real details"
       hint={
         <>
-          <p className='font-semibold'>Demo app – please don&apos;t use real details</p>
           <p>Email: e.g. guest123@example.com</p>
           <p>Password: e.g. demo1234 (min. 4 characters)</p>
-          <p className='mt-1 text-zinc-300'>
-            No emails are sent. Note your details – there&apos;s no password reset.
+          <p className='mt-1 opacity-80'>
+            No emails are sent. Note your details – there&apos;s no password
+            reset.
           </p>
         </>
       }
