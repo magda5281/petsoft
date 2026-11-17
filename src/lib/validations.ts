@@ -35,6 +35,6 @@ export const authSchema = z.object({
     .string()
     .trim()
     .max(100)
-    .min(4, { message: 'Password must be at least 6 characters' }),
+    .min(4, { message: 'Password must be at least 4 characters' }),
 });
 export type TAuthForm = z.infer<typeof authSchema>;

@@ -228,6 +228,14 @@ export async function createCheckoutSession() {
     metadata: {
       userId: session.user.id, // Store the user ID in metadata for later reference
     },
+    // Demo instructions shown on the Stripe Checkout page, under the Pay button.
+    // (Stripe does not allow card details to be prefilled.)
+    custom_text: {
+      submit: {
+        message:
+          'DEMO – no real payment is taken. Card: 4242 4242 4242 4242 · Expiry: any future date · CVC: any 3 digits · Name: Demo Guest · Postcode: any.',
+      },
+    },
   });
   redirect(checkoutSession.url!);
 }
