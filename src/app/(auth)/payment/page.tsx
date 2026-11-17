@@ -1,6 +1,7 @@
 'use client';
 import { createCheckoutSession } from '@/actions/actions';
 import H1 from '@/components/h1';
+import DemoHint from '@/components/demo-hint';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -48,16 +49,28 @@ export default function PaymentPage({
         </Button>
       )}
       {!(searchParams && searchParams.success) && (
-        <Button
-          onClick={async () => {
-            startTransition(async () => {
-              await createCheckoutSession();
-            });
-          }}
-          disabled={isPending}
+        <DemoHint
+          title='Demo – no real payment is taken'
+          hint={
+            <>
+              <p>Card number: 4242 4242 4242 4242</p>
+              <p>Expiry (MM/YY): any future date</p>
+              <p>CVC: any 3 digits</p>
+              <p>Name on card: Demo Guest</p>
+            </>
+          }
         >
-          Buy lifetime access for £299
-        </Button>
+          <Button
+            onClick={async () => {
+              startTransition(async () => {
+                await createCheckoutSession();
+              });
+            }}
+            disabled={isPending}
+          >
+            Buy lifetime access for £299
+          </Button>
+        </DemoHint>
       )}
     </main>
   );
